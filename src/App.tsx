@@ -1,16 +1,22 @@
 import * as React from 'react';
 import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
+
+import { Route, Routes } from 'react-router-dom';
+import RequireAuth from './components/RequireAuth';
+import SignIn from './pages/SignIn';
+import Dashboard from './pages/Dashboard';
 
 export default function App() {
   return (
     <Container maxWidth="sm">
       <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Create React App example with TypeScript
-        </Typography>
+        <Routes>
+          <Route path="/dashboard" element={ 
+            <RequireAuth children={ <Dashboard /> } />
+           } />
+          <Route path="/login" element={ <SignIn /> } />
+        </Routes>
       </Box>
     </Container>
   );
