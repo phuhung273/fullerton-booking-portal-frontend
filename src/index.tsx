@@ -6,7 +6,7 @@ import App from './App';
 import theme from './theme';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import store from './app/store'
+import store from './state/store'
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>

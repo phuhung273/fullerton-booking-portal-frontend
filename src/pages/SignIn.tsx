@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -8,17 +8,45 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import authService from '../services/authService';
+import { setAuth } from '../state/authSlice';
+import { useAppDispatch } from '../state/hooks';
+import { useNavigate } from 'react-router-dom';
 
 const theme = createTheme();
 
 export default function SignIn() {
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const [error, setError] = useState();
+
+  const removeError = () => setError(undefined);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const formData = new FormData(event.currentTarget);
+
+    const username = formData.get('username');
+    const password = formData.get('password');
+    if(!username || !password) return;
+    
+    authService.login(username.toString(), password.toString())
+      .then((response) => {
+        const { data, success, message } = response.data;
+        if(!success) {
+          setError(message);
+          return;
+        }
+
+        removeError();
+        dispatch(setAuth(data));
+        navigate('/dashboard');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -39,6 +67,12 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+
+          {error &&
+            <Typography variant="subtitle1">
+              {error}
+            </Typography>
+          }
 
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField

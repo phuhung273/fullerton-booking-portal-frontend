@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useAppSelector } from '../state/hooks'
 
-type Props = {}
+export default function Dashboard() {
 
-export default function Dashboard({}: Props) {
+  useEffect(() => {
+    
+  })
+
   return (
     <div>Dashboard</div>
   )
