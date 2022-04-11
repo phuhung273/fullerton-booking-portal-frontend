@@ -12,6 +12,7 @@ import authService from '../services/authService';
 import { setAuth } from '../state/authSlice';
 import { useAppDispatch } from '../state/hooks';
 import { useNavigate } from 'react-router-dom';
+import { hideLoading, showLoading } from '../state/appSlice';
 
 const theme = createTheme();
 
@@ -32,8 +33,10 @@ export default function SignIn() {
     const password = formData.get('password');
     if(!username || !password) return;
     
+    dispatch(showLoading());
     authService.login(username.toString(), password.toString())
       .then((response) => {
+        dispatch(hideLoading());
         const { data, success, message } = response.data;
         if(!success) {
           setError(message);
@@ -45,6 +48,7 @@ export default function SignIn() {
         navigate('/dashboard');
       })
       .catch((error) => {
+        dispatch(hideLoading());
         console.log(error);
       });
   };
