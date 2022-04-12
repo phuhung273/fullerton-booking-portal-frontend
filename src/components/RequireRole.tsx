@@ -8,10 +8,9 @@ type Props = {
 }
 
 export default function RequireRole({ children, roles }: Props) {
-
   const role = useAppSelector(selectRole);
 
-  if(!role || !roles.includes(role.name)) return null;
+  if (!role || !roles.includes(role.name)) return null;
 
   return <>{children}</>;
 }

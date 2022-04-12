@@ -7,35 +7,36 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import authService from '../services/authService';
 import { selectToken, setAuth } from '../state/authSlice';
 import { useAppDispatch, useAppSelector } from '../state/hooks';
-import { Navigate, useNavigate } from 'react-router-dom';
 import { hideLoading, showLoading } from '../state/appSlice';
-import { useForm } from 'react-hook-form';
 import InputText from '../components/form/InputText';
 
 const theme = createTheme();
 
 export default function SignIn() {
-
   const token = useAppSelector(selectToken);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [error, setError] = useState<string|null>();
+  const [errorMessage, setErrorMessage] = useState<string|null>();
 
-  const removeError = () => setError(null);
+  const removeError = () => setErrorMessage(null);
 
-  const { register, handleSubmit, control, formState: { errors } } = useForm<{
+  const {
+    register, handleSubmit, control, formState: { errors },
+  } = useForm<{
     username: string,
     password: string,
   }>({
     defaultValues: {
       username: '',
       password: '',
-    }
+    },
   });
 
   useEffect(() => {
@@ -43,29 +44,29 @@ export default function SignIn() {
       required: 'Username is required.',
       minLength: {
         value: 3,
-        message: 'Username too short'
-      }
+        message: 'Username too short',
+      },
     });
 
     register('password', {
       required: 'Password is required.',
       minLength: {
         value: 3,
-        message: 'Password too short'
-      }
+        message: 'Password too short',
+      },
     });
   }, [register]);
 
-  const onSubmit = handleSubmit((data) => {
-    const { username, password } = data;
+  const onSubmit = handleSubmit((formData) => {
+    const { username, password } = formData;
 
     dispatch(showLoading());
     authService.login(username, password)
       .then((response) => {
         dispatch(hideLoading());
         const { data, success, message } = response.data;
-        if(!success) {
-          setError(message);
+        if (!success) {
+          setErrorMessage(message);
           return;
         }
 
@@ -102,11 +103,12 @@ export default function SignIn() {
             Sign in
           </Typography>
 
-          {error &&
+          {errorMessage
+            && (
             <Typography variant="h6" color="error">
-              {error}
+              {errorMessage}
             </Typography>
-          }
+            )}
 
           <Box component="form" onSubmit={onSubmit} sx={{ mt: 1 }}>
 
@@ -142,7 +144,7 @@ export default function SignIn() {
 
           <Box
             sx={{
-                marginTop: 4,
+              marginTop: 4,
             }}
           >
 

@@ -5,14 +5,12 @@ import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 
 const menu = (
-  <React.Fragment>
-    <ListItemButton>
-      <ListItemIcon>
-        <DashboardIcon />
-      </ListItemIcon>
-      <ListItemText primary="Dashboard" />
-    </ListItemButton>
-  </React.Fragment>
+  <ListItemButton>
+    <ListItemIcon>
+      <DashboardIcon />
+    </ListItemIcon>
+    <ListItemText primary="Dashboard" />
+  </ListItemButton>
 );
 
 export default menu;

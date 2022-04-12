@@ -19,18 +19,17 @@ export default function BookingDeleteDialog({
   handleClose,
   onConfirm,
 }: Props) {
-
-  if(!data) return null;
+  if (!data) return null;
 
   const handleConfirm = () => {
-    if(!data?._id) return;
+    if (!data?._id) return;
     onConfirm(data._id);
-  }
+  };
 
   const getProposedTimeLabel = (index: number) => {
     const num = index + 1;
     return `Proposed Time ${num}`;
-  }
+  };
 
   return (
     <Dialog
@@ -47,7 +46,7 @@ export default function BookingDeleteDialog({
             flexDirection: 'column',
             m: 'auto',
           }}
-        > 
+        >
           <TextField
             sx={{ mt: 2, minWidth: 120 }}
             label="Type"
@@ -66,9 +65,9 @@ export default function BookingDeleteDialog({
             }}
           />
 
-          {data.proposedTimes.map((item, index) => 
+          {data.proposedTimes.map((item, index) => (
             <TextField
-              key={index}
+              key={getProposedTimeLabel(index)}
               sx={{ mt: 2, minWidth: 120 }}
               label={getProposedTimeLabel(index)}
               value={new Date(item).toLocaleString()}
@@ -76,20 +75,20 @@ export default function BookingDeleteDialog({
                 readOnly: true,
               }}
             />
-          )}
+          ))}
 
           <Typography style={{ marginTop: '1em' }} gutterBottom>
             Are you sure to delete this Booking?
           </Typography>
         </Box>
       </DialogContent>
-      
+
       <DialogActions>
         <Button onClick={handleClose} color="inherit">
           Cancel
         </Button>
         <Button
-          variant="contained" 
+          variant="contained"
           color="error"
           disableElevation
           onClick={handleConfirm}
@@ -98,5 +97,5 @@ export default function BookingDeleteDialog({
         </Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }

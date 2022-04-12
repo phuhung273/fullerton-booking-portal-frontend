@@ -1,5 +1,7 @@
-import React from 'react'
-import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
+import React from 'react';
+import {
+  styled, useTheme, Theme, CSSObject,
+} from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
@@ -12,12 +14,12 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import drawerMenu from './DrawerMenu'
 import { AccountCircle } from '@mui/icons-material';
 import { Menu, MenuItem } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import drawerMenu from './DrawerMenu';
 import { useAppDispatch, useAppSelector } from '../state/hooks';
 import { removeAuth, selectUsername } from '../state/authSlice';
-import { useNavigate } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -95,7 +97,6 @@ type Props = {
 }
 
 export default function Layout({ children }: Props) {
-
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -114,8 +115,7 @@ export default function Layout({ children }: Props) {
   const logout = () => {
     dispatch(removeAuth());
     navigate('/login');
-  }
-
+  };
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -185,7 +185,7 @@ export default function Layout({ children }: Props) {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        
+
         {children}
       </Box>
     </Box>

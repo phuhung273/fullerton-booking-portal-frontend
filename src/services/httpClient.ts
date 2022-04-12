@@ -1,10 +1,10 @@
-import axios, { HeadersDefaults } from "axios";
+import axios, { HeadersDefaults } from 'axios';
 
 const service = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: 'http://localhost:5000',
   headers: {
-    "Content-type": "application/json"
-  }
+    'Content-type': 'application/json',
+  },
 });
 
 interface CommonHeaderProperties extends HeadersDefaults {
@@ -12,29 +12,30 @@ interface CommonHeaderProperties extends HeadersDefaults {
 }
 
 service.defaults.headers = {
-  Authorization: ''
+  Authorization: '',
 } as CommonHeaderProperties;
 
 // request interceptor
 service.interceptors.request.use(
-  config => {
+  (config) => {
     const token = localStorage.getItem('token');
+    const newConfig = config;
 
     if (token) {
       // let each request carry token
-      const { headers } = config; 
-      config.headers = {
+      const { headers } = config;
+      newConfig.headers = {
         ...headers,
-        Authorization: `Bearer: ${token}`
-      }
+        Authorization: `Bearer: ${token}`,
+      };
     }
 
-    return config
+    return newConfig;
   },
-  error => {
-    console.log(error) // for debug
-    return Promise.reject(error)
-  }
-)
+  (error) => {
+    console.log(error); // for debug
+    return Promise.reject(error);
+  },
+);
 
-export default service
+export default service;

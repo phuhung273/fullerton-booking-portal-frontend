@@ -6,8 +6,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import IBooking from '../../interfaces/booking';
 import { useForm } from 'react-hook-form';
+import IBooking from '../../interfaces/booking';
 import InputText from '../form/InputText';
 
 type Props = {
@@ -21,15 +21,16 @@ export default function BookingRejectDialog({
   handleClose,
   onConfirm,
 }: Props) {
+  if (!data) return null;
 
-  if(!data) return null;
-
-  const { register, handleSubmit, reset, control, formState: { errors } } = useForm<{
+  const {
+    register, handleSubmit, reset, control, formState: { errors },
+  } = useForm<{
     reason: string,
   }>({
     defaultValues: {
       reason: '',
-    }
+    },
   });
 
   useEffect(() => {
@@ -37,15 +38,14 @@ export default function BookingRejectDialog({
       required: 'Reason is required.',
       minLength: {
         value: 3,
-        message: 'Reason too short.'
-      }
+        message: 'Reason too short.',
+      },
     });
-
   }, [register]);
 
   const onSubmit = handleSubmit((formData) => {
     const { reason } = formData;
-    if(!data._id) return;
+    if (!data._id) return;
     onConfirm(data._id, reason);
 
     reset();
@@ -67,7 +67,7 @@ export default function BookingRejectDialog({
               flexDirection: 'column',
               m: 'auto',
             }}
-          > 
+          >
             <InputText
               name="reason"
               label="Reason for rejection"
@@ -81,14 +81,14 @@ export default function BookingRejectDialog({
             </Typography>
           </Box>
         </DialogContent>
-        
+
         <DialogActions>
           <Button onClick={handleClose} color="inherit">
             Cancel
           </Button>
           <Button
             type="submit"
-            variant="contained" 
+            variant="contained"
             color="error"
             disableElevation
           >
@@ -97,5 +97,5 @@ export default function BookingRejectDialog({
         </DialogActions>
       </form>
     </Dialog>
-  )
+  );
 }

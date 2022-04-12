@@ -1,5 +1,7 @@
 import React from 'react';
-import { FormControl, FormHelperText, TextField, TextFieldProps } from '@mui/material';
+import {
+  FormControl, FormHelperText, TextField, TextFieldProps,
+} from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { Control, Controller, FieldError } from 'react-hook-form';
 
@@ -16,20 +18,19 @@ export default function InputDateTime({
   formError,
   sx,
 }: Props & TextFieldProps) {
-
   return (
-    <Controller 
+    <Controller
       name={name}
       control={control}
       render={({ field: { onChange, value } }) => (
         <FormControl error={Boolean(formError)}>
           <DateTimePicker
-            renderInput={(props) =>
+            renderInput={(props) => (
               <TextField
                 sx={sx}
-                {...props} 
+                {...props}
               />
-            }
+            )}
             label={label}
             value={value}
             onChange={onChange}
@@ -38,5 +39,5 @@ export default function InputDateTime({
         </FormControl>
       )}
     />
-  )
+  );
 }

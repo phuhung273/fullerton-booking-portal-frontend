@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import Box from '@mui/material/Box';
-import { Button, TextField } from '@mui/material';
+import { Button } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import { DateTimePicker } from '@mui/x-date-pickers';
-import IBooking from '../../interfaces/booking';
 import { useForm } from 'react-hook-form';
+import IBooking from '../../interfaces/booking';
 import InputText from '../form/InputText';
 import Dropdown, { DropdownOption } from '../form/Dropdown';
 import InputDateTime from '../form/InputDateTime';
@@ -20,20 +19,20 @@ type Props = {
   onConfirm: (data: IBooking) => void;
 }
 
-
 const eventTypes: Array<DropdownOption> = [
-  { label: "Health Talk", value: "Health Talk" },
-  { label: "Wellness Events", value: "Wellness Events" },
-  { label: "Fitness Activities", value: "Fitness Activities" },
+  { label: 'Health Talk', value: 'Health Talk' },
+  { label: 'Wellness Events', value: 'Wellness Events' },
+  { label: 'Fitness Activities', value: 'Fitness Activities' },
 ];
 
 export default function BookingDialog({
   open,
   handleClose,
-  onConfirm
+  onConfirm,
 }: Props) {
-
-  const { register, handleSubmit, reset, control, formState: { errors } } = useForm<{
+  const {
+    register, handleSubmit, reset, control, formState: { errors },
+  } = useForm<{
     type: string,
     location: string,
     proposedTime1: Date | null,
@@ -46,7 +45,7 @@ export default function BookingDialog({
       proposedTime1: null,
       proposedTime2: null,
       proposedTime3: null,
-    }
+    },
   });
 
   useEffect(() => {
@@ -54,8 +53,8 @@ export default function BookingDialog({
       required: 'Location is required.',
       minLength: {
         value: 3,
-        message: 'Location too short.'
-      }
+        message: 'Location too short.',
+      },
     });
 
     register('type', {
@@ -64,28 +63,30 @@ export default function BookingDialog({
 
     register('proposedTime1', {
       required: 'Time is required.',
-      validate: value => isValidDateTime(value) || 'Invalid time.'
+      validate: (value) => isValidDateTime(value) || 'Invalid time.',
     });
 
     register('proposedTime2', {
       required: 'Time is required.',
-      validate: value => isValidDateTime(value) || 'Invalid time.'
+      validate: (value) => isValidDateTime(value) || 'Invalid time.',
     });
 
     register('proposedTime3', {
       required: 'Time is required.',
-      validate: value => isValidDateTime(value) || 'Invalid time.'
+      validate: (value) => isValidDateTime(value) || 'Invalid time.',
     });
   }, [register]);
 
   const onSubmit = handleSubmit((data) => {
-    const { type, location, proposedTime1, proposedTime2, proposedTime3 } = data;
+    const {
+      type, location, proposedTime1, proposedTime2, proposedTime3,
+    } = data;
 
     onConfirm({
       type,
       location: location.toString(),
-      proposedTimes: [ proposedTime1!, proposedTime2!, proposedTime3! ]
-    })
+      proposedTimes: [proposedTime1!, proposedTime2!, proposedTime3!],
+    });
 
     reset();
   });
@@ -106,7 +107,7 @@ export default function BookingDialog({
               flexDirection: 'column',
               m: 'auto',
             }}
-          > 
+          >
 
             <Dropdown
               name="type"
@@ -125,7 +126,7 @@ export default function BookingDialog({
               control={control}
             />
 
-            <InputDateTime 
+            <InputDateTime
               name="proposedTime1"
               label="Proposed Time 1"
               sx={{ mt: 2, minWidth: 120 }}
@@ -133,7 +134,7 @@ export default function BookingDialog({
               control={control}
             />
 
-            <InputDateTime 
+            <InputDateTime
               name="proposedTime2"
               label="Proposed Time 3"
               sx={{ mt: 2, minWidth: 120 }}
@@ -141,7 +142,7 @@ export default function BookingDialog({
               control={control}
             />
 
-            <InputDateTime 
+            <InputDateTime
               name="proposedTime3"
               label="Proposed Time 3"
               sx={{ mt: 2, minWidth: 120 }}
@@ -150,14 +151,14 @@ export default function BookingDialog({
             />
           </Box>
         </DialogContent>
-        
+
         <DialogActions>
           <Button onClick={handleClose} color="inherit">
             Cancel
           </Button>
           <Button
             type="submit"
-            variant="contained" 
+            variant="contained"
             color="primary"
             disableElevation
           >
@@ -166,5 +167,5 @@ export default function BookingDialog({
         </DialogActions>
       </form>
     </Dialog>
-  )
+  );
 }

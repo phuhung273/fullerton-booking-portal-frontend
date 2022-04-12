@@ -1,17 +1,19 @@
-import { FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectProps } from '@mui/material';
-import React from 'react'
+import {
+  FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectProps,
+} from '@mui/material';
+import React from 'react';
 import { Control, Controller, FieldError } from 'react-hook-form';
+
+export type DropdownOption = {
+  label: React.ReactNode;
+  value: string | number;
+}
 
 type Props = {
   name: string;
   control: Control<any>;
   formError?: FieldError;
   options: Array<DropdownOption>;
-}
-
-export type DropdownOption = {
-  label: React.ReactNode;
-  value: string | number;
 }
 
 export default function Dropdown({
@@ -23,9 +25,8 @@ export default function Dropdown({
   sx,
   ...props
 }: Props & SelectProps) {
-
   return (
-    <Controller 
+    <Controller
       name={name}
       control={control}
       render={({ field: { onChange, value } }) => (
@@ -36,13 +37,13 @@ export default function Dropdown({
             value={value}
             {...props}
           >
-            {options.map((option, index) =>
-              <MenuItem key={index} value={option.value}>{option.label}</MenuItem>
-            )}
+            {options.map((option) => (
+              <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+            ))}
           </Select>
           <FormHelperText>{formError?.message}</FormHelperText>
         </FormControl>
       )}
     />
-  )
+  );
 }

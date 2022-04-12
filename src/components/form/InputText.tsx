@@ -1,5 +1,5 @@
+import React from 'react';
 import { TextField, TextFieldProps } from '@mui/material';
-import React from 'react'
 import { Control, Controller, FieldError } from 'react-hook-form';
 
 type Props = {
@@ -16,7 +16,7 @@ export default function InputText({
   ...props
 }: Props & TextFieldProps) {
   return (
-    <Controller 
+    <Controller
       name={name}
       control={control}
       render={({ field }) => (
@@ -29,5 +29,5 @@ export default function InputText({
         />
       )}
     />
-  )
+  );
 }
