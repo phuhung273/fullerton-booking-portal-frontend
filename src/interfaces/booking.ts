@@ -5,6 +5,6 @@ export default interface IBooking {
     location: string;
     proposedTimes: Array<Date>;
     selectedTime?: Date;
-    status?: string;
+    status?: 'review' | 'approve' | 'reject';
     rejectReason?: string;
 }

@@ -3,7 +3,11 @@ import { Navigate } from "react-router-dom";
 import { useAppSelector } from "../state/hooks";
 import { selectToken } from "../state/authSlice";
 
-export default function RequireAuth({ children }: { children: JSX.Element }) {
+type Props = {
+  children: React.ReactNode;
+}
+
+export default function RequireAuth({ children }: Props) {
 
   const token = useAppSelector(selectToken)
 
@@ -11,5 +15,5 @@ export default function RequireAuth({ children }: { children: JSX.Element }) {
     return <Navigate to="/login" replace />;
   }
 
-  return children;
+  return <>{children}</>;
 }

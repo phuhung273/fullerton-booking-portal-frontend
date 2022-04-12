@@ -20,8 +20,22 @@ function store(data: IBooking) {
     });
 };
 
+function approve(id:string, index: number) {
+    return http.post(`/bookings/${id}/approve`, {
+        index
+    });
+};
+
+function reject(id:string, rejectReason: string) {
+    return http.post(`/bookings/${id}/reject`, {
+        rejectReason
+    });
+};
+
 export default {
     index,
     store,
     remove,
+    approve,
+    reject,
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import { Button, TextField } from '@mui/material';
@@ -6,53 +6,89 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import IBooking from '../../interfaces/booking';
+import { useForm } from 'react-hook-form';
+import InputText from '../form/InputText';
+import Dropdown, { DropdownOption } from '../form/Dropdown';
+import InputDateTime from '../form/InputDateTime';
+import { isValidDateTime } from '../../utils/time';
 
 type Props = {
   open: boolean;
   handleClose: () => void;
-  onSubmitValidated: (data: IBooking) => void;
+  onConfirm: (data: IBooking) => void;
 }
 
 
-const eventTypes = [
-  "Health Talk",
-  "Wellness Events",
-  "Fitness Activities"
+const eventTypes: Array<DropdownOption> = [
+  { label: "Health Talk", value: "Health Talk" },
+  { label: "Wellness Events", value: "Wellness Events" },
+  { label: "Fitness Activities", value: "Fitness Activities" },
 ];
 
 export default function BookingDialog({
   open,
   handleClose,
-  onSubmitValidated
+  onConfirm
 }: Props) {
 
-  const [time1, setTime1] = useState<Date | null>(null);
-  const [time2, setTime2] = useState<Date | null>(null);
-  const [time3, setTime3] = useState<Date | null>(null);
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-
-    const type = formData.get('type');
-    const location = formData.get('location')
-
-    if(!type || !location || !time1 || !time2 || !time3){
-      return;
+  const { register, handleSubmit, reset, control, formState: { errors } } = useForm<{
+    type: string,
+    location: string,
+    proposedTime1: Date | null,
+    proposedTime2: Date | null,
+    proposedTime3: Date | null,
+  }>({
+    defaultValues: {
+      type: '',
+      location: '',
+      proposedTime1: null,
+      proposedTime2: null,
+      proposedTime3: null,
     }
+  });
 
-    onSubmitValidated({
-      type: type.toString(),
+  useEffect(() => {
+    register('location', {
+      required: 'Location is required.',
+      minLength: {
+        value: 3,
+        message: 'Location too short.'
+      }
+    });
+
+    register('type', {
+      required: 'Event type is required.',
+    });
+
+    register('proposedTime1', {
+      required: 'Time is required.',
+      validate: value => isValidDateTime(value) || 'Invalid time.'
+    });
+
+    register('proposedTime2', {
+      required: 'Time is required.',
+      validate: value => isValidDateTime(value) || 'Invalid time.'
+    });
+
+    register('proposedTime3', {
+      required: 'Time is required.',
+      validate: value => isValidDateTime(value) || 'Invalid time.'
+    });
+  }, [register]);
+
+  const onSubmit = handleSubmit((data) => {
+    const { type, location, proposedTime1, proposedTime2, proposedTime3 } = data;
+
+    onConfirm({
+      type,
       location: location.toString(),
-      proposedTimes: [ time1, time2, time3 ]
+      proposedTimes: [ proposedTime1!, proposedTime2!, proposedTime3! ]
     })
-  };
+
+    reset();
+  });
 
   return (
     <Dialog
@@ -61,7 +97,7 @@ export default function BookingDialog({
       fullWidth
       maxWidth="sm"
     >
-      <form noValidate onSubmit={handleSubmit}>
+      <form onSubmit={onSubmit}>
         <DialogTitle>Create new Booking</DialogTitle>
         <DialogContent dividers>
           <Box
@@ -71,61 +107,46 @@ export default function BookingDialog({
               m: 'auto',
             }}
           > 
-            <FormControl sx={{ mt: 2, minWidth: 120 }}>
-              <InputLabel htmlFor="max-width">Event Type</InputLabel>
-              <Select
-                label="type"
-                value={eventTypes[0]}
-                inputProps={{
-                  name: 'type',
-                }}
-              >
-                {eventTypes.map((value) =>
-                  <MenuItem key={value} value={value}>{value}</MenuItem>
-                )}
-              </Select>
-            </FormControl>
 
-            <TextField
+            <Dropdown
+              name="type"
+              label="Event Type"
+              options={eventTypes}
+              sx={{ mt: 2, minWidth: 120 }}
+              formError={errors?.type}
+              control={control}
+            />
+
+            <InputText
               name="location"
               label="Location"
               sx={{ mt: 2, minWidth: 120 }}
+              formError={errors?.location}
+              control={control}
             />
 
-            <DateTimePicker
-              renderInput={(props) => 
-                <TextField 
-                sx={{ mt: 2, minWidth: 120 }}
-                {...props} 
-                />
-              }
+            <InputDateTime 
+              name="proposedTime1"
               label="Proposed Time 1"
-              value={time1}
-              onChange={setTime1}
+              sx={{ mt: 2, minWidth: 120 }}
+              formError={errors?.proposedTime1}
+              control={control}
             />
 
-            <DateTimePicker
-              renderInput={(props) => 
-                <TextField 
-                sx={{ mt: 2, minWidth: 120 }}
-                {...props} 
-                />
-              }
-              label="Proposed Time 2"
-              value={time2}
-              onChange={setTime2}
-            />
-
-            <DateTimePicker
-              renderInput={(props) => 
-                <TextField 
-                sx={{ mt: 2, minWidth: 120 }}
-                {...props} 
-                />
-              }
+            <InputDateTime 
+              name="proposedTime2"
               label="Proposed Time 3"
-              value={time3}
-              onChange={setTime3}
+              sx={{ mt: 2, minWidth: 120 }}
+              formError={errors?.proposedTime2}
+              control={control}
+            />
+
+            <InputDateTime 
+              name="proposedTime3"
+              label="Proposed Time 3"
+              sx={{ mt: 2, minWidth: 120 }}
+              formError={errors?.proposedTime3}
+              control={control}
             />
           </Box>
         </DialogContent>

@@ -14,15 +14,14 @@ interface SnackbarState {
   message: string;
 }
 
-const initialSnackbarState: SnackbarState = {
-  visible: false,
-  type: 'success',
-  message: ''
-}
 // Define the initial state using that type
 const initialState: AppState = {
   loading: true,
-  snackbar: initialSnackbarState,
+  snackbar: {
+    visible: false,
+    type: 'success',
+    message: ''
+  },
 }
 
 export const appSlice = createSlice({
@@ -51,7 +50,10 @@ export const appSlice = createSlice({
       };
     },
     hideSnackBar: (state) => {
-      state.snackbar = initialSnackbarState
+      state.snackbar = {
+        ...state.snackbar,
+        visible: false,
+      }
     }
   },
 })

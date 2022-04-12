@@ -13,6 +13,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import drawerMenu from './DrawerMenu'
+import { AccountCircle } from '@mui/icons-material';
+import { Menu, MenuItem } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '../state/hooks';
+import { removeAuth, selectUsername } from '../state/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -90,16 +95,27 @@ type Props = {
 }
 
 export default function Layout({ children }: Props) {
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const theme = useTheme();
+
+  const username = useAppSelector(selectUsername);
+
   const [open, setOpen] = React.useState(true);
+  const handleDrawerOpen = () => setOpen(true);
+  const handleDrawerClose = () => setOpen(false);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const logout = () => {
+    dispatch(removeAuth());
+    navigate('/login');
+  }
+
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -118,11 +134,44 @@ export default function Layout({ children }: Props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
+
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+            Booking Dashboard
           </Typography>
+
+          <Typography variant="subtitle1" noWrap component="div">
+            {username}
+          </Typography>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleMenu}
+            color="inherit"
+          >
+            <AccountCircle />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={logout}>Logout</MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
+
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>

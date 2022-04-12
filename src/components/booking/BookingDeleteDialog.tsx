@@ -11,20 +11,20 @@ import IBooking from '../../interfaces/booking';
 type Props = {
   data?: IBooking;
   handleClose: () => void;
-  onDelete: (id: string) => void;
+  onConfirm: (id: string) => void;
 }
 
 export default function BookingDeleteDialog({
   data,
   handleClose,
-  onDelete,
+  onConfirm,
 }: Props) {
 
   if(!data) return null;
 
   const handleConfirm = () => {
     if(!data?._id) return;
-    onDelete(data._id);
+    onConfirm(data._id);
   }
 
   const getProposedTimeLabel = (index: number) => {

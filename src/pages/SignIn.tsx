@@ -1,40 +1,66 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import authService from '../services/authService';
-import { setAuth } from '../state/authSlice';
-import { useAppDispatch } from '../state/hooks';
-import { useNavigate } from 'react-router-dom';
+import { selectToken, setAuth } from '../state/authSlice';
+import { useAppDispatch, useAppSelector } from '../state/hooks';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { hideLoading, showLoading } from '../state/appSlice';
+import { useForm } from 'react-hook-form';
+import InputText from '../components/form/InputText';
 
 const theme = createTheme();
 
 export default function SignIn() {
 
+  const token = useAppSelector(selectToken);
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [error, setError] = useState();
+  const [error, setError] = useState<string|null>();
 
-  const removeError = () => setError(undefined);
+  const removeError = () => setError(null);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+  const { register, handleSubmit, control, formState: { errors } } = useForm<{
+    username: string,
+    password: string,
+  }>({
+    defaultValues: {
+      username: '',
+      password: '',
+    }
+  });
 
-    const username = formData.get('username');
-    const password = formData.get('password');
-    if(!username || !password) return;
-    
+  useEffect(() => {
+    register('username', {
+      required: 'Username is required.',
+      minLength: {
+        value: 3,
+        message: 'Username too short'
+      }
+    });
+
+    register('password', {
+      required: 'Password is required.',
+      minLength: {
+        value: 3,
+        message: 'Password too short'
+      }
+    });
+  }, [register]);
+
+  const onSubmit = handleSubmit((data) => {
+    const { username, password } = data;
+
     dispatch(showLoading());
-    authService.login(username.toString(), password.toString())
+    authService.login(username, password)
       .then((response) => {
         dispatch(hideLoading());
         const { data, success, message } = response.data;
@@ -51,7 +77,11 @@ export default function SignIn() {
         dispatch(hideLoading());
         console.log(error);
       });
-  };
+  });
+
+  if (token) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -73,28 +103,33 @@ export default function SignIn() {
           </Typography>
 
           {error &&
-            <Typography variant="subtitle1">
+            <Typography variant="h6" color="error">
               {error}
             </Typography>
           }
 
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              label="Username"
+          <Box component="form" onSubmit={onSubmit} sx={{ mt: 1 }}>
+
+            <InputText
               name="username"
+              control={control}
+              label="Username"
+              formError={errors?.username}
+              margin="normal"
+              fullWidth
               autoFocus
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
+
+            <InputText
               name="password"
+              control={control}
               label="Password"
+              formError={errors?.password}
               type="password"
+              margin="normal"
+              fullWidth
             />
+
             <Button
               type="submit"
               fullWidth

@@ -61,5 +61,7 @@ export const { setToken, setAuth, removeAuth } = authSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectToken = (state: RootState) => state.auth.token
+export const selectRole = (state: RootState) => state.auth.role
+export const selectUsername = (state: RootState) => state.auth.username
 
 export default authSlice.reducer
