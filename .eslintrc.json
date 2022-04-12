@@ -29,7 +29,8 @@
         "react/jsx-no-useless-fragment": "warn",
         "react/jsx-props-no-spreading": "warn",
         "no-unused-vars":"warn",
-        "max-len":"warn"
+        "max-len":"warn",
+        "linebreak-style": "warn"
     },
     "settings": {
         "import/resolver": {
