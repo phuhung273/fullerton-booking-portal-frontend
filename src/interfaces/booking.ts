@@ -1,5 +1,4 @@
-
-export default interface IBooking {
+interface IBooking {
     _id?: string;
     type: string;
     location: string;
@@ -8,3 +7,5 @@ export default interface IBooking {
     status?: 'review' | 'approve' | 'reject';
     rejectReason?: string;
 }
+
+export default IBooking;
